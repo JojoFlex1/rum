@@ -1,0 +1,1 @@
+export { MvpStartUpScreen } from "./MvpStartUpScreen";

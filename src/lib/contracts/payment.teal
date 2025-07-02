@@ -1,0 +1,24 @@
+#pragma version 6
+txn ApplicationID
+int 0
+==
+bnz handle_create
+
+txn OnCompletion
+int NoOp
+==
+bnz handle_noop
+
+int 0
+return
+
+handle_create:
+int 1
+return
+
+handle_noop:
+txn Sender
+global CreatorAddress
+==
+int 1
+return
