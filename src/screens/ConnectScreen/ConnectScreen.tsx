@@ -1,10 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Users, Share2, Trophy, Twitter, Instagram, Facebook } from "lucide-react";
+import { ArrowLeft, Users, Share2, Trophy, Twitter, Instagram, Facebook, Settings, Edit3, Camera, MapPin } from "lucide-react";
 import { NavigationBar } from "../../components/ui/navigation-bar";
 
 export const ConnectScreen = (): JSX.Element => {
   const navigate = useNavigate();
+  
+  // Get user profile data (in real app, this would come from auth context)
+  const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+  const connectedSocials = userProfile.connectedSocials || [];
 
   return (
     <div className="flex justify-center w-full bg-[#1F2024]">
@@ -41,7 +45,59 @@ export const ConnectScreen = (): JSX.Element => {
             >
               <ArrowLeft size={20} className="text-white" />
             </button>
-            <h1 className="text-2xl font-bold text-white">Connect</h1>
+            <h1 className="text-2xl font-bold text-white">Profile & Connections</h1>
+          </div>
+
+          {/* User Profile Section */}
+          <div className="px-4 mb-8">
+            <div className="bg-[#2C2D32] rounded-xl p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <div className="w-16 h-16 rounded-full bg-[#CBAB58]/20 flex items-center justify-center mr-4 overflow-hidden">
+                    {userProfile.image ? (
+                      <img src={userProfile.image} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <Camera size={24} className="text-[#CBAB58]" />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="text-white text-lg font-semibold">
+                      {userProfile.firstName ? 
+                        `${userProfile.firstName} ${userProfile.lastName || ''}`.trim() : 
+                        'Your Profile'
+                      }
+                    </h3>
+                    <div className="flex items-center mt-1">
+                      <MapPin size={14} className="text-[#71727A] mr-1" />
+                      <p className="text-[#71727A] text-sm">
+                        {userProfile.location ? 'Location shared' : 'No location set'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => navigate("/create-profile")}
+                  className="p-2 rounded-full bg-[#1F2024] hover:bg-[#CBAB58]/20 transition-colors"
+                >
+                  <Edit3 size={20} className="text-[#CBAB58]" />
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <p className="text-white text-xl font-bold">{connectedSocials.length}</p>
+                  <p className="text-[#71727A] text-xs">Connected</p>
+                </div>
+                <div>
+                  <p className="text-white text-xl font-bold">11</p>
+                  <p className="text-[#71727A] text-xs">Friends</p>
+                </div>
+                <div>
+                  <p className="text-white text-xl font-bold">5,500</p>
+                  <p className="text-[#71727A] text-xs">Social Points</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Stats */}
@@ -89,7 +145,7 @@ export const ConnectScreen = (): JSX.Element => {
 
           {/* Social Connections */}
           <div className="px-4">
-            <h2 className="text-white font-semibold mb-4">Connect Social Media</h2>
+            <h2 className="text-white font-semibold mb-4">Social Media Accounts</h2>
             <div className="space-y-4">
               <div className="bg-[#2C2D32] rounded-xl p-4">
                 <div className="flex items-center justify-between">
@@ -99,11 +155,17 @@ export const ConnectScreen = (): JSX.Element => {
                     </div>
                     <div>
                       <h3 className="text-white font-medium">X</h3>
-                      <p className="text-[#71727A] text-sm">Connect to verify connections</p>
+                      <p className="text-[#71727A] text-sm">
+                        {connectedSocials.includes('twitter') ? 'Connected - Find friends' : 'Connect to find friends'}
+                      </p>
                     </div>
                   </div>
-                  <button className="px-4 py-2 bg-black rounded-lg text-white font-medium">
-                    Connect
+                  <button className={`px-4 py-2 rounded-lg font-medium ${
+                    connectedSocials.includes('twitter') 
+                      ? 'bg-green-500/20 text-green-400' 
+                      : 'bg-black text-white hover:bg-gray-800'
+                  }`}>
+                    {connectedSocials.includes('twitter') ? 'Connected' : 'Connect'}
                   </button>
                 </div>
               </div>
@@ -116,11 +178,17 @@ export const ConnectScreen = (): JSX.Element => {
                     </div>
                     <div>
                       <h3 className="text-white font-medium">Instagram</h3>
-                      <p className="text-[#71727A] text-sm">Connect to verify connections</p>
+                      <p className="text-[#71727A] text-sm">
+                        {connectedSocials.includes('instagram') ? 'Connected - Share collections' : 'Connect to share collections'}
+                      </p>
                     </div>
                   </div>
-                  <button className="px-4 py-2 bg-[#E4405F] rounded-lg text-white font-medium">
-                    Connect
+                  <button className={`px-4 py-2 rounded-lg font-medium ${
+                    connectedSocials.includes('instagram') 
+                      ? 'bg-green-500/20 text-green-400' 
+                      : 'bg-[#E4405F] text-white hover:bg-[#E4405F]/80'
+                  }`}>
+                    {connectedSocials.includes('instagram') ? 'Connected' : 'Connect'}
                   </button>
                 </div>
               </div>
@@ -133,11 +201,17 @@ export const ConnectScreen = (): JSX.Element => {
                     </div>
                     <div>
                       <h3 className="text-white font-medium">Facebook</h3>
-                      <p className="text-[#71727A] text-sm">Connect to verify connections</p>
+                      <p className="text-[#71727A] text-sm">
+                        {connectedSocials.includes('facebook') ? 'Connected - Expand network' : 'Connect to expand network'}
+                      </p>
                     </div>
                   </div>
-                  <button className="px-4 py-2 bg-[#1877F2] rounded-lg text-white font-medium">
-                    Connect
+                  <button className={`px-4 py-2 rounded-lg font-medium ${
+                    connectedSocials.includes('facebook') 
+                      ? 'bg-green-500/20 text-green-400' 
+                      : 'bg-[#1877F2] text-white hover:bg-[#1877F2]/80'
+                  }`}>
+                    {connectedSocials.includes('facebook') ? 'Connected' : 'Connect'}
                   </button>
                 </div>
               </div>

@@ -142,7 +142,9 @@ export const VerificationScreen = (): JSX.Element => {
         localStorage.removeItem('isNewUser');
         
         // Navigate based on user status
-        if (isNewUser || !user.user_metadata?.first_name) {
+        const needsProfile = isNewUser || !user.user_metadata?.first_name;
+        
+        if (needsProfile) {
           navigate("/create-profile");
         } else {
           navigate("/home");

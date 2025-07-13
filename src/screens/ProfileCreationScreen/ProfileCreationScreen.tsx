@@ -1,13 +1,16 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../../components/ui/card";
-import { MapPin } from "lucide-react";
+import { MapPin, Twitter, Instagram, Facebook, Camera, Upload } from "lucide-react";
 
 export const ProfileCreationScreen = (): JSX.Element => {
   const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [connectedSocials, setConnectedSocials] = useState<string[]>([]);
+  const [isConnecting, setIsConnecting] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -20,6 +23,20 @@ export const ProfileCreationScreen = (): JSX.Element => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleSocialConnect = async (platform: string) => {
+    setIsConnecting(platform);
+    
+    // Simulate social media connection
+    setTimeout(() => {
+      setConnectedSocials(prev => [...prev, platform]);
+      setIsConnecting(null);
+    }, 1500);
+  };
+
+  const handleSocialDisconnect = (platform: string) => {
+    setConnectedSocials(prev => prev.filter(p => p !== platform));
   };
 
   const handleLocationShare = () => {
@@ -69,6 +86,17 @@ export const ProfileCreationScreen = (): JSX.Element => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Store profile data (in real app, this would go to backend/Supabase)
+    const profileData = {
+      firstName,
+      lastName,
+      image: imagePreview,
+      location,
+      connectedSocials
+    };
+    
+    localStorage.setItem('userProfile', JSON.stringify(profileData));
     navigate("/home");
   };
 
@@ -108,7 +136,7 @@ export const ProfileCreationScreen = (): JSX.Element => {
                 <CardContent className="p-0 space-y-6">
                   <div className="text-center mb-8">
                     <h2 className="text-white text-2xl font-semibold">Create Profile</h2>
-                    <p className="text-[#71727A] mt-2">Please fill in your details</p>
+                    <p className="text-[#71727A] mt-2">Set up your profile and connect your social accounts</p>
                   </div>
                   
                   <form onSubmit={handleSubmit} className="space-y-6">
@@ -116,12 +144,12 @@ export const ProfileCreationScreen = (): JSX.Element => {
                     <div className="flex flex-col items-center space-y-4">
                       <div 
                         onClick={() => fileInputRef.current?.click()}
-                        className="w-24 h-24 rounded-full bg-[#2C2D32] flex items-center justify-center cursor-pointer overflow-hidden"
+                        className="w-24 h-24 rounded-full bg-[#2C2D32] flex items-center justify-center cursor-pointer overflow-hidden border-2 border-[#71727A] hover:border-[#CBAB58] transition-colors"
                       >
                         {imagePreview ? (
                           <img src={imagePreview} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="text-[#71727A] text-4xl">+</div>
+                          <Camera size={32} className="text-[#71727A]" />
                         )}
                       </div>
                       <input
@@ -131,7 +159,7 @@ export const ProfileCreationScreen = (): JSX.Element => {
                         onChange={handleImageChange}
                         className="hidden"
                       />
-                      <p className="text-[#71727A]">Add profile photo</p>
+                      <p className="text-[#71727A] text-sm">Tap to add profile photo</p>
                     </div>
 
                     <div className="space-y-4">
@@ -141,6 +169,16 @@ export const ProfileCreationScreen = (): JSX.Element => {
                           placeholder="First Name"
                           value={firstName}
                           onChange={(e) => setFirstName(e.target.value)}
+                          className="w-full h-[52px] px-6 text-white bg-[#2C2D32] rounded-[14px] border-2 border-[#2C2D32] focus:border-[#CBAB58] focus:outline-none placeholder:text-[#71727A]"
+                        />
+                      </div>
+
+                      <div className="relative">
+                        <input
+                          type="text"
+                          placeholder="Last Name (Optional)"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
                           className="w-full h-[52px] px-6 text-white bg-[#2C2D32] rounded-[14px] border-2 border-[#2C2D32] focus:border-[#CBAB58] focus:outline-none placeholder:text-[#71727A]"
                         />
                       </div>
@@ -163,13 +201,88 @@ export const ProfileCreationScreen = (): JSX.Element => {
                           <p className="text-red-500 text-sm text-center">{locationError}</p>
                         )}
                       </div>
+
+                      {/* Social Media Connections */}
+                      <div className="space-y-4">
+                        <h3 className="text-white font-medium">Connect Social Media (Optional)</h3>
+                        <p className="text-[#71727A] text-sm">Connect your social accounts to find friends and earn bonus points</p>
+                        
+                        {/* Twitter */}
+                        <div className="flex items-center justify-between p-4 bg-[#2C2D32] rounded-xl">
+                          <div className="flex items-center">
+                            <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center mr-3">
+                              <Twitter size={20} className="text-white" />
+                            </div>
+                            <div>
+                              <h4 className="text-white font-medium">X (Twitter)</h4>
+                              <p className="text-[#71727A] text-sm">Connect to find friends</p>
+                            </div>
+                          </div>
+                          {connectedSocials.includes('twitter') ? (
+                            <button
+                              type="button"
+                              onClick={() => handleSocialDisconnect('twitter')}
+                              className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-sm"
+                            >
+                              Connected
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleSocialConnect('twitter')}
+                              disabled={isConnecting === 'twitter'}
+                              className="px-4 py-2 bg-black text-white rounded-lg text-sm hover:bg-gray-800 transition-colors disabled:opacity-50"
+                            >
+                              {isConnecting === 'twitter' ? 'Connecting...' : 'Connect'}
+                            </button>
+                          )}
+                        </div>
                     </div>
 
+                        {/* Instagram */}
+                        <div className="flex items-center justify-between p-4 bg-[#2C2D32] rounded-xl">
+                          <div className="flex items-center">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mr-3">
+                              <Instagram size={20} className="text-white" />
+                            </div>
+                            <div>
+                              <h4 className="text-white font-medium">Instagram</h4>
+                              <p className="text-[#71727A] text-sm">Share your collections</p>
+                            </div>
+                          </div>
+                          {connectedSocials.includes('instagram') ? (
+                            <button
+                              type="button"
+                              onClick={() => handleSocialDisconnect('instagram')}
+                              className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-sm"
+                            >
+                              Connected
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleSocialConnect('instagram')}
+                              disabled={isConnecting === 'instagram'}
+                              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-sm hover:opacity-80 transition-opacity disabled:opacity-50"
+                            >
+                              {isConnecting === 'instagram' ? 'Connecting...' : 'Connect'}
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     <button 
                       type="submit"
                       className="w-full h-[52px] text-[#1F2024] text-[17px] font-semibold rounded-[14px] bg-[#CBAB58] hover:bg-[#b69843]"
                     >
                       Continue
+                    </button>
+
+                    <button 
+                      type="button"
+                      onClick={() => navigate("/home")}
+                      className="w-full h-[52px] text-[#CBAB58] text-[17px] font-medium rounded-[14px] bg-transparent border border-[#CBAB58] hover:bg-[#CBAB58]/10"
+                    >
+                      Skip for Now
                     </button>
                   </form>
                 </CardContent>

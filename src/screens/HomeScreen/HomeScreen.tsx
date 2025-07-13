@@ -10,6 +10,10 @@ export const HomeScreen = (): JSX.Element => {
   const { user, signOut } = useAuth();
   const [userLocation, setUserLocation] = useState<string>("Buenos Aires");
 
+  // Get user profile data
+  const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+  const connectedSocials = userProfile.connectedSocials || [];
+
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -47,6 +51,11 @@ export const HomeScreen = (): JSX.Element => {
     // Check user metadata first
     if (user?.user_metadata?.first_name && user.user_metadata.first_name.trim()) {
       return user.user_metadata.first_name.trim();
+    }
+    
+    // Check stored profile data
+    if (userProfile.firstName && userProfile.firstName.trim()) {
+      return userProfile.firstName.trim();
     }
     
     // Check if there's a stored demo name
@@ -153,7 +162,7 @@ export const HomeScreen = (): JSX.Element => {
                       <Users size={24} className="text-[#1F2024]" />
                     </div>
                     <p className="text-white text-xl font-bold">11</p>
-                    <p className="text-[#CBAB58] text-xs">Connections</p>
+                    <p className="text-[#CBAB58] text-xs">Friends</p>
                   </div>
                 </div>
                 <div className="bg-[#2C2D32]/40 backdrop-blur-lg rounded-2xl p-4">
@@ -202,7 +211,7 @@ export const HomeScreen = (): JSX.Element => {
                   className="w-28 h-12 rounded-2xl bg-[#CBAB58] flex items-center justify-center shadow-lg"
                 >
                   <UserPlus size={20} className="text-[#1F2024] mr-1" />
-                  <span className="text-[#1F2024] text-lg font-semibold">Connect</span>
+                  <span className="text-[#1F2024] text-lg font-semibold">Profile</span>
                 </button>
               </div>
 
