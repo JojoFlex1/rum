@@ -220,6 +220,7 @@ export const ConnectScreen = (): JSX.Element => {
         </div>
 
         <NavigationBar />
+        <NavigationBar />
       </div>
     </div>
   );
