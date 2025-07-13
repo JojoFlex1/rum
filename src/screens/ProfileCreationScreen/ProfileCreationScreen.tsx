@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../../components/ui/card";
-import { MapPin, Twitter, Instagram, Facebook, Camera, Upload } from "lucide-react";
+import { MapPin, Twitter, Instagram, Facebook, Camera, Upload, ArrowLeft } from "lucide-react";
 
 export const ProfileCreationScreen = (): JSX.Element => {
   const [firstName, setFirstName] = useState("");
@@ -132,10 +132,20 @@ export const ProfileCreationScreen = (): JSX.Element => {
 
             {/* Profile Creation Form */}
             <div className="flex flex-col items-center px-8 pt-[72px]">
+              {/* Header with Back Button */}
+              <div className="flex items-center w-full mb-6">
+                <button 
+                  onClick={() => navigate("/home")}
+                  className="w-10 h-10 rounded-full bg-[#2C2D32] flex items-center justify-center mr-4"
+                >
+                  <ArrowLeft size={20} className="text-white" />
+                </button>
+                <h2 className="text-white text-2xl font-semibold">Create Profile</h2>
+              </div>
+
               <Card className="w-full border-none bg-transparent shadow-none">
                 <CardContent className="p-0 space-y-6">
-                  <div className="text-center mb-8">
-                    <h2 className="text-white text-2xl font-semibold">Create Profile</h2>
+                  <div className="text-center mb-6">
                     <p className="text-[#71727A] mt-2">Set up your profile and connect your social accounts</p>
                   </div>
                   
