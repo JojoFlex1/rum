@@ -11,7 +11,7 @@ const offers = [
     merchant: "Bodega Catena Zapata",
     location: "Mendoza, Argentina",
     image: "https://images.pexels.com/photos/2702805/pexels-photo-2702805.jpeg",
-    points: 5000,
+    points: 500,
     expiresIn: "5 days",
     description: "Exclusive wine tasting session with our master sommelier, featuring our premium Malbec collection."
   },
@@ -21,7 +21,7 @@ const offers = [
     merchant: "Don Julio",
     location: "Palermo, Buenos Aires",
     image: "https://images.pexels.com/photos/3184183/pexels-photo-3184183.jpeg",
-    points: 8000,
+    points: 1000,
     expiresIn: "3 days",
     description: "Private dining experience with our head chef, including a 7-course tasting menu."
   },
@@ -31,7 +31,7 @@ const offers = [
     merchant: "La Ventana",
     location: "San Telmo, Buenos Aires",
     image: "https://images.pexels.com/photos/3894247/pexels-photo-3894247.jpeg",
-    points: 11500,
+    points: 1500,
     expiresIn: "7 days",
     description: "Private tango lesson followed by VIP seating at our evening show."
   }
