@@ -155,7 +155,7 @@ export const HomeScreen = (): JSX.Element => {
                       <Award size={24} className="text-[#1F2024]" />
                     </div>
                     <p className="text-white text-lg font-bold">{mockUserPoints.totalPoints.toLocaleString()}</p>
-                    <p className="text-[#CBAB58] text-xs">{formatUSDFromPoints(mockUserPoints.totalPoints)}</p>
+                    <p className="text-[#E1C87D] text-xs font-medium">{formatUSDFromPoints(mockUserPoints.totalPoints)}</p>
                   </div>
                 </div>
                 <div className="bg-[#2C2D32]/40 backdrop-blur-lg rounded-2xl p-4">
@@ -164,7 +164,7 @@ export const HomeScreen = (): JSX.Element => {
                       <Users size={24} className="text-[#1F2024]" />
                     </div>
                     <p className="text-white text-xl font-bold">11</p>
-                    <p className="text-[#CBAB58] text-xs">Friends</p>
+                    <p className="text-[#E1C87D] text-xs font-medium">Friends</p>
                   </div>
                 </div>
                 <div className="bg-[#2C2D32]/40 backdrop-blur-lg rounded-2xl p-4">
@@ -173,7 +173,7 @@ export const HomeScreen = (): JSX.Element => {
                       <Gift size={24} className="text-[#1F2024]" />
                     </div>
                     <p className="text-white text-xl font-bold">70</p>
-                    <p className="text-[#CBAB58] text-xs">NFTs</p>
+                    <p className="text-[#E1C87D] text-xs font-medium">NFTs</p>
                   </div>
                 </div>
               </div>
@@ -189,24 +189,24 @@ export const HomeScreen = (): JSX.Element => {
                 >
                   <Mic size={64} className="text-[#1F2024]" />
                 </button>
-                <p className="text-[#71727A] text-sm">Tap to speak</p>
-              </div>
+                <p className="text-white/90 text-sm font-medium">Tap to speak</p>
+                  <p className="text-xl text-white/90">Ready to explore</p>
 
-              {/* Action Buttons */}
+                <p className="text-xl text-white/90 ml-7">{userLocation}?</p>
               <div className="flex justify-center space-x-12 mb-24">
                 <button 
                   onClick={() => navigate("/voice-command")}
                   className="w-36 h-12 rounded-2xl bg-[#CBAB58] flex items-center justify-center shadow-lg"
                 >
                   <Send size={20} className="text-[#1F2024] mr-1" />
-                  <span className="text-[#1F2024] text-lg font-semibold">Pay</span>
+                  <LogOut size={20} className="text-white/90" />
                 </button>
                 <button 
                   onClick={() => navigate("/collectibles")}
                   className="w-36 h-12 rounded-2xl bg-[#CBAB58] flex items-center justify-center shadow-lg"
                 >
                   <Zap size={20} className="text-[#1F2024] mr-1" />
-                  <span className="text-[#1F2024] text-lg font-semibold">Collect</span>
+                  <Settings size={20} className="text-white/90" />
                 </button>
               </div>
 
@@ -217,36 +217,36 @@ export const HomeScreen = (): JSX.Element => {
                     onClick={() => navigate("/payments")}
                     className="flex flex-col items-center"
                   >
-                    <CreditCard size={24} className={location.pathname === "/payments" ? "text-[#CBAB58]" : "text-white/60"} />
-                    <span className={location.pathname === "/payments" ? "text-[#CBAB58] text-xs mt-1" : "text-white/60 text-xs mt-1"}>Wallet</span>
+                    <CreditCard size={24} className={location.pathname === "/payments" ? "text-[#E1C87D]" : "text-white/80"} />
+                    <span className={location.pathname === "/payments" ? "text-[#E1C87D] text-xs mt-1 font-medium" : "text-white/80 text-xs mt-1"}>Wallet</span>
                   </button>
                   <button 
                     onClick={() => navigate("/offers")}
                     className="flex flex-col items-center"
                   >
-                    <Gift size={24} className={location.pathname === "/offers" ? "text-[#CBAB58]" : "text-white/60"} />
-                    <span className={location.pathname === "/offers" ? "text-[#CBAB58] text-xs mt-1" : "text-white/60 text-xs mt-1"}>Offers</span>
+                    <Gift size={24} className={location.pathname === "/offers" ? "text-[#E1C87D]" : "text-white/80"} />
+                    <span className={location.pathname === "/offers" ? "text-[#E1C87D] text-xs mt-1 font-medium" : "text-white/80 text-xs mt-1"}>Offers</span>
                   </button>
                   <button 
                     onClick={() => navigate("/home")}
                     className="flex flex-col items-center"
                   >
-                    <Home size={24} className={location.pathname === "/home" ? "text-[#CBAB58]" : "text-white/60"} />
-                    <span className={location.pathname === "/home" ? "text-[#CBAB58] text-xs mt-1" : "text-white/60 text-xs mt-1"}>Home</span>
+                    <Home size={24} className={location.pathname === "/home" ? "text-[#E1C87D]" : "text-white/80"} />
+                    <span className={location.pathname === "/home" ? "text-[#E1C87D] text-xs mt-1 font-medium" : "text-white/80 text-xs mt-1"}>Home</span>
                   </button>
                   <button 
                     onClick={() => navigate("/history")}
                     className="flex flex-col items-center"
                   >
-                    <History size={24} className={location.pathname === "/history" ? "text-[#CBAB58]" : "text-white/60"} />
-                    <span className={location.pathname === "/history" ? "text-[#CBAB58] text-xs mt-1" : "text-white/60 text-xs mt-1"}>History</span>
+                    <History size={24} className={location.pathname === "/history" ? "text-[#E1C87D]" : "text-white/80"} />
+                    <span className={location.pathname === "/history" ? "text-[#E1C87D] text-xs mt-1 font-medium" : "text-white/80 text-xs mt-1"}>History</span>
                   </button>
                   <button 
                     onClick={() => navigate("/passport")}
                     className="flex flex-col items-center"
                   >
-                    <Passport size={24} className={location.pathname === "/passport" ? "text-[#CBAB58]" : "text-white/60"} />
-                    <span className={location.pathname === "/passport" ? "text-[#CBAB58] text-xs mt-1" : "text-white/60 text-xs mt-1"}>Passport</span>
+                    <Passport size={24} className={location.pathname === "/passport" ? "text-[#E1C87D]" : "text-white/80"} />
+                    <span className={location.pathname === "/passport" ? "text-[#E1C87D] text-xs mt-1 font-medium" : "text-white/80 text-xs mt-1"}>Passport</span>
                   </button>
                 </div>
               </div>
