@@ -190,23 +190,23 @@ export const HomeScreen = (): JSX.Element => {
                   <Mic size={64} className="text-[#1F2024]" />
                 </button>
                 <p className="text-white/90 text-sm font-medium">Tap to speak</p>
-                  <p className="text-xl text-white/90">Ready to explore</p>
+              </div>
 
-                <p className="text-xl text-white/90 ml-7">{userLocation}?</p>
+              {/* Quick Actions */}
               <div className="flex justify-center space-x-12 mb-24">
                 <button 
                   onClick={() => navigate("/voice-command")}
                   className="w-36 h-12 rounded-2xl bg-[#CBAB58] flex items-center justify-center shadow-lg"
                 >
                   <Send size={20} className="text-[#1F2024] mr-1" />
-                  <LogOut size={20} className="text-white/90" />
+                  <span className="text-[#1F2024] font-medium">Send</span>
                 </button>
                 <button 
                   onClick={() => navigate("/collectibles")}
                   className="w-36 h-12 rounded-2xl bg-[#CBAB58] flex items-center justify-center shadow-lg"
                 >
                   <Zap size={20} className="text-[#1F2024] mr-1" />
-                  <Settings size={20} className="text-white/90" />
+                  <span className="text-[#1F2024] font-medium">Collect</span>
                 </button>
               </div>
 
@@ -257,5 +257,3 @@ export const HomeScreen = (): JSX.Element => {
     </div>
   );
 };
-  )
-}
