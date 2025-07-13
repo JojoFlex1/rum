@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent } from "../../components/ui/card";
 import { Home, History, Import as Passport, Mic, CreditCard, Award, Gift, Settings, MapPin, LogOut, Users, Zap, Send } from "lucide-react";
 import { useAuth } from "../../components/AuthProvider";
+import { mockUserPoints, formatPointsWithUSD, formatUSDFromPoints, getPointsTier } from "../../lib/points-system";
 
 export const HomeScreen = (): JSX.Element => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export const HomeScreen = (): JSX.Element => {
   // Get user profile data
   const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
   const connectedSocials = userProfile.connectedSocials || [];
+  const userTier = getPointsTier(mockUserPoints.lifetimeEarned);
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -152,8 +154,9 @@ export const HomeScreen = (): JSX.Element => {
                     <div className="w-12 h-12 rounded-full bg-[#CBAB58] flex items-center justify-center mb-2">
                       <Award size={24} className="text-[#1F2024]" />
                     </div>
-                    <p className="text-white text-xl font-bold">11,000</p>
-                    <p className="text-[#CBAB58] text-xs">Points</p>
+                    <p className="text-white text-lg font-bold">{mockUserPoints.totalPoints.toLocaleString()}</p>
+                    <p className="text-[#CBAB58] text-xs">{formatUSDFromPoints(mockUserPoints.totalPoints)}</p>
+                    <p className="text-[#71727A] text-xs">{userTier.tier} Tier</p>
                   </div>
                 </div>
                 <div className="bg-[#2C2D32]/40 backdrop-blur-lg rounded-2xl p-4">

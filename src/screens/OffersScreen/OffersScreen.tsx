@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, Clock, MapPin, Lock } from "lucide-react";
 import { NavigationBar } from "../../components/ui/navigation-bar";
+import { mockUserPoints, canRedeemOffer, formatUSDFromPoints } from "../../lib/points-system";
 
 const offers = [
   {
@@ -36,13 +37,11 @@ const offers = [
   }
 ];
 
-const userPoints = 11000; // Current user points
-
 export const OffersScreen = (): JSX.Element => {
   const navigate = useNavigate();
 
   const isOfferAvailable = (requiredPoints: number) => {
-    return userPoints >= requiredPoints;
+    return canRedeemOffer(mockUserPoints.totalPoints, requiredPoints);
   };
 
   return (
@@ -99,7 +98,10 @@ export const OffersScreen = (): JSX.Element => {
                     />
                     <div className="absolute top-4 right-4 bg-[#1F2024]/80 backdrop-blur-md px-4 py-2 rounded-full flex items-center">
                       <Star size={16} className="text-[#CBAB58] mr-2" />
-                      <span className="text-white font-semibold">{offer.points.toLocaleString()} pts</span>
+                      <div className="text-right">
+                        <span className="text-white font-semibold">{offer.points.toLocaleString()} pts</span>
+                        <p className="text-[#CBAB58] text-xs">{formatUSDFromPoints(offer.points)} value</p>
+                      </div>
                     </div>
                   </div>
 
@@ -133,7 +135,7 @@ export const OffersScreen = (): JSX.Element => {
                       ) : (
                         <>
                           <Lock size={16} />
-                          <span>Need {(offer.points - userPoints).toLocaleString()} more points</span>
+                          <span>Need {(offer.points - mockUserPoints.totalPoints).toLocaleString()} more points</span>
                         </>
                       )}
                     </button>

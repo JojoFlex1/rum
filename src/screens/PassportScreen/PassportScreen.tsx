@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, MapPin, Trophy, Star, Globe, Users, Award, Crown, TrendingUp, Calendar, Filter, ChevronRight, Medal, Zap } from "lucide-react";
 import { NavigationBar } from "../../components/ui/navigation-bar";
 import { getTopCollectors, getUserStats, mockLeaderboard } from "../../lib/social-gamification";
+import { mockUserPoints, formatPointsWithUSD, formatUSDFromPoints, getPointsTier } from "../../lib/points-system";
 
 const cities = [
   {
@@ -111,8 +112,9 @@ export const PassportScreen = (): JSX.Element => {
   const currentUserId = 'user1';
   const userStats = getUserStats(currentUserId);
   const topCollectors = getTopCollectors(5);
+  const userTier = getPointsTier(mockUserPoints.lifetimeEarned);
   const totalCollectibles = cities.reduce((sum, city) => sum + city.collectibles, 0);
-  const totalPoints = 11000;
+  const totalPoints = mockUserPoints.totalPoints;
   const totalConnections = cities.reduce((sum, city) => sum + city.connections, 0);
 
   const getRarityColor = (rarity: string) => {
@@ -206,20 +208,20 @@ export const PassportScreen = (): JSX.Element => {
 
           {/* Status Tier Bar */}
           <div className="px-4 mb-6">
-            <div className="bg-gradient-to-r from-[#CBAB58] to-[#E1C87D] rounded-2xl p-6">
+            <div className="bg-gradient-to-r from-[#CBAB58] to-[#E1C87D] rounded-2xl p-6" style={{ background: `linear-gradient(to right, ${userTier.color}, ${userTier.color}80)` }}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
                   <div className="w-12 h-12 rounded-full bg-[#1F2024] flex items-center justify-center mr-4">
                     <Crown size={24} className="text-[#CBAB58]" />
                   </div>
                   <div>
-                    <h3 className="text-[#1F2024] text-lg font-bold">Aether Tier</h3>
+                    <h3 className="text-[#1F2024] text-lg font-bold">{userTier.tier} Tier</h3>
                     <p className="text-[#1F2024]/70">Rank #{userStats.rank} globally</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-[#1F2024] text-2xl font-bold">{formatPoints(userStats.totalPoints)}</p>
-                  <p className="text-[#1F2024]/70 text-sm">points</p>
+                  <p className="text-[#1F2024] text-2xl font-bold">{totalPoints.toLocaleString()}</p>
+                  <p className="text-[#1F2024]/70 text-sm">{formatUSDFromPoints(totalPoints)} value</p>
                 </div>
               </div>
               
@@ -267,13 +269,16 @@ export const PassportScreen = (): JSX.Element => {
               {/* Points Staking Info */}
               <div className="bg-[#2C2D32] rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-white font-semibold">Monthly Earnings</h3>
-                  <span className="text-[#CBAB58] font-bold">+80 pts</span>
+                  <h3 className="text-white font-semibold">This Month</h3>
+                  <div className="text-right">
+                    <span className="text-[#CBAB58] font-bold">+248 pts</span>
+                    <p className="text-[#71727A] text-xs">{formatUSDFromPoints(248)} earned</p>
+                  </div>
                 </div>
                 <div className="h-2 bg-[#1F2024] rounded-full overflow-hidden mb-2">
                   <div className="h-full bg-[#CBAB58] w-[75%]" />
                 </div>
-                <p className="text-[#71727A] text-sm">25 days until next reward (2% monthly)</p>
+                <p className="text-[#71727A] text-sm">Tier benefits: {userTier.benefits[0]}</p>
               </div>
 
               {/* World Map */}

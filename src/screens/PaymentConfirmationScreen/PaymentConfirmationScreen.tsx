@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { CheckCircle2, Clock, Award, ExternalLink, Copy } from "lucide-react";
 import { NavigationBar } from "../../components/ui/navigation-bar";
 import { formatAddressForDisplay, getNetworkDisplayName, getNetworkColor } from "../../lib/crypto-utils";
+import { calculatePaymentPoints, formatPointsWithUSD, formatUSDFromPoints } from "../../lib/points-system";
 
 export const PaymentConfirmationScreen = (): JSX.Element => {
   const navigate = useNavigate();
@@ -16,7 +17,10 @@ export const PaymentConfirmationScreen = (): JSX.Element => {
   const atmFee = isATM ? arsAmount * 0.05 : 0;
   const totalAmount = arsAmount + serviceFee + atmFee;
   const usdcAmount = (totalAmount * 0.00086).toFixed(8);
-  const pointsEarned = Math.round(totalAmount / 1000); // 1 point per 1000 ARS
+  
+  // Calculate points earned (convert ARS to USD first, then calculate points)
+  const totalAmountUSD = totalAmount * 0.00086 * 1163; // Convert to USD (rough rate)
+  const pointsEarned = calculatePaymentPoints(totalAmountUSD);
 
   const getPaymentMethod = () => {
     const path = location.state?.from || "";
@@ -132,9 +136,15 @@ export const PaymentConfirmationScreen = (): JSX.Element => {
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <Award size={24} className="text-[#CBAB58] mr-3" />
-                <span className="text-white">Points Earned</span>
+                <div>
+                  <span className="text-white">Points Earned</span>
+                  <p className="text-[#CBAB58] text-sm">{formatUSDFromPoints(pointsEarned)} cashback value</p>
+                </div>
               </div>
-              <span className="text-[#CBAB58] font-bold text-xl">+{pointsEarned}</span>
+              <div className="text-right">
+                <span className="text-[#CBAB58] font-bold text-xl">+{pointsEarned}</span>
+                <p className="text-[#71727A] text-sm">{formatUSDFromPoints(pointsEarned)}</p>
+              </div>
             </div>
           </div>
 

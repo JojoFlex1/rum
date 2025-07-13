@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Download, ChevronRight, Wallet, CreditCard, Banknote, QrCode, X, Calendar } from "lucide-react";
 import { NavigationBar } from "../../components/ui/navigation-bar";
+import { calculatePaymentPoints, formatUSDFromPoints } from "../../lib/points-system";
 
 export const HistoryScreen = (): JSX.Element => {
   const navigate = useNavigate();
@@ -17,7 +18,8 @@ export const HistoryScreen = (): JSX.Element => {
       amount: "ARS 87,209",
       cryptoAmount: "75.00 USDC",
       paymentMethod: "crypto",
-      category: "Restaurant"
+      category: "Restaurant",
+      pointsEarned: 87
     },
     {
       id: 2,
@@ -26,7 +28,8 @@ export const HistoryScreen = (): JSX.Element => {
       amount: "ARS 9,884",
       cryptoAmount: "8.50 USDC",
       paymentMethod: "cash",
-      category: "Coffee Shop"
+      category: "Coffee Shop",
+      pointsEarned: 10
     },
     {
       id: 3,
@@ -35,7 +38,8 @@ export const HistoryScreen = (): JSX.Element => {
       amount: "ARS 34,884",
       cryptoAmount: "30.00 USDC",
       paymentMethod: "crypto",
-      category: "Tourism"
+      category: "Tourism",
+      pointsEarned: 35
     },
     {
       id: 4,
@@ -44,7 +48,8 @@ export const HistoryScreen = (): JSX.Element => {
       amount: "ARS 17,442",
       cryptoAmount: "15.00 USDC",
       paymentMethod: "cash",
-      category: "Transportation"
+      category: "Transportation",
+      pointsEarned: 17
     },
     {
       id: 5,
@@ -53,7 +58,8 @@ export const HistoryScreen = (): JSX.Element => {
       amount: "ARS 98,837",
       cryptoAmount: "85.00 USDC",
       paymentMethod: "card",
-      category: "Restaurant"
+      category: "Restaurant",
+      pointsEarned: 99
     }
   ];
 
@@ -168,6 +174,7 @@ export const HistoryScreen = (): JSX.Element => {
                 <div className="flex flex-col items-end">
                   <span className="text-white font-medium">-{transaction.amount}</span>
                   <span className="text-[#CBAB58] text-sm">-{transaction.cryptoAmount}</span>
+                  <span className="text-green-400 text-xs">+{transaction.pointsEarned} pts ({formatUSDFromPoints(transaction.pointsEarned)})</span>
                 </div>
               </div>
             ))}

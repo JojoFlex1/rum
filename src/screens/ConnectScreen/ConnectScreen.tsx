@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Users, Share2, Trophy, Twitter, Instagram, Facebook, Settings, Edit3, Camera, MapPin } from "lucide-react";
 import { NavigationBar } from "../../components/ui/navigation-bar";
+import { mockUserPoints, formatUSDFromPoints, calculateReferralBonus } from "../../lib/points-system";
 
 export const ConnectScreen = (): JSX.Element => {
   const navigate = useNavigate();
@@ -93,8 +94,8 @@ export const ConnectScreen = (): JSX.Element => {
                   <p className="text-[#71727A] text-xs">Friends</p>
                 </div>
                 <div>
-                  <p className="text-white text-xl font-bold">5,500</p>
-                  <p className="text-[#71727A] text-xs">Social Points</p>
+                  <p className="text-white text-xl font-bold">{mockUserPoints.totalPoints.toLocaleString()}</p>
+                  <p className="text-[#71727A] text-xs">{formatUSDFromPoints(mockUserPoints.totalPoints)} value</p>
                 </div>
               </div>
             </div>
@@ -133,7 +134,7 @@ export const ConnectScreen = (): JSX.Element => {
                   </div>
                   <div>
                     <h3 className="text-white font-medium">Share & Earn</h3>
-                    <p className="text-[#71727A] text-sm">300 points per referral</p>
+                    <p className="text-[#71727A] text-sm">{calculateReferralBonus()} points ({formatUSDFromPoints(calculateReferralBonus())}) per referral</p>
                   </div>
                 </div>
               </div>
