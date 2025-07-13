@@ -156,7 +156,6 @@ export const HomeScreen = (): JSX.Element => {
                     </div>
                     <p className="text-white text-lg font-bold">{mockUserPoints.totalPoints.toLocaleString()}</p>
                     <p className="text-[#CBAB58] text-xs">{formatUSDFromPoints(mockUserPoints.totalPoints)}</p>
-                    <p className="text-[#71727A] text-xs">{userTier.tier} Tier</p>
                   </div>
                 </div>
                 <div className="bg-[#2C2D32]/40 backdrop-blur-lg rounded-2xl p-4">
