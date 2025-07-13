@@ -257,3 +257,5 @@ export const HomeScreen = (): JSX.Element => {
     </div>
   );
 };
+  )
+}
