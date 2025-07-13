@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent } from "../../components/ui/card";
-import { Home, History, Import as Passport, Mic, CreditCard, Award, Gift, Settings, MapPin, LogOut, Users, Zap, Send, UserPlus } from "lucide-react";
+import { Home, History, Import as Passport, Mic, CreditCard, Award, Gift, Settings, MapPin, LogOut, Users, Zap, Send } from "lucide-react";
 import { useAuth } from "../../components/AuthProvider";
 
 export const HomeScreen = (): JSX.Element => {
@@ -191,27 +191,20 @@ export const HomeScreen = (): JSX.Element => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-center space-x-8 mb-24">
+              <div className="flex justify-center space-x-12 mb-24">
                 <button 
                   onClick={() => navigate("/voice-command")}
-                  className="w-32 h-12 rounded-2xl bg-[#CBAB58] flex items-center justify-center shadow-lg"
+                  className="w-36 h-12 rounded-2xl bg-[#CBAB58] flex items-center justify-center shadow-lg"
                 >
                   <Send size={20} className="text-[#1F2024] mr-1" />
                   <span className="text-[#1F2024] text-lg font-semibold">Pay</span>
                 </button>
                 <button 
                   onClick={() => navigate("/collectibles")}
-                  className="w-32 h-12 rounded-2xl bg-[#CBAB58] flex items-center justify-center shadow-lg"
+                  className="w-36 h-12 rounded-2xl bg-[#CBAB58] flex items-center justify-center shadow-lg"
                 >
                   <Zap size={20} className="text-[#1F2024] mr-1" />
                   <span className="text-[#1F2024] text-lg font-semibold">Collect</span>
-                </button>
-                <button 
-                  onClick={() => navigate("/connect")}
-                  className="w-28 h-12 rounded-2xl bg-[#CBAB58] flex items-center justify-center shadow-lg"
-                >
-                  <UserPlus size={20} className="text-[#1F2024] mr-1" />
-                  <span className="text-[#1F2024] text-lg font-semibold">Profile</span>
                 </button>
               </div>
 
