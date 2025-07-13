@@ -11,6 +11,7 @@ const merchantRoutes = require('./routes/merchants');
 const transactionRoutes = require('./routes/transactions');
 const qrRoutes = require('./routes/qr');
 const healthRoutes = require('./routes/health');
+const routeDetectionRoutes = require('./routes/routeDetection');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -54,6 +55,7 @@ app.use('/users', userRoutes);
 app.use('/merchants', merchantRoutes);
 app.use('/transactions', transactionRoutes);
 app.use('/qr', qrRoutes);
+app.use('/api', routeDetectionRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {

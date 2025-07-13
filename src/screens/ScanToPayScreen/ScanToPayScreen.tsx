@@ -5,6 +5,7 @@ import { NavigationBar } from "../../components/ui/navigation-bar";
 import { parseQRCodeData, formatAddressForDisplay, getNetworkDisplayName, getNetworkColor, generateSampleQRCodes, WalletAddress, validateTransactionAmount, estimateTransactionFee } from "../../lib/crypto-utils";
 import { useWallet } from "../../components/WalletProvider";
 import { sendTransaction, parseWalletQRCode, handleWalletError } from "../../lib/reown";
+import { apiClient, formatRouteDisplay, type RouteResponse } from "../../lib/api";
 
 export const ScanToPayScreen = (): JSX.Element => {
   const navigate = useNavigate();
@@ -26,6 +27,9 @@ export const ScanToPayScreen = (): JSX.Element => {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
+  const [routeData, setRouteData] = useState<RouteResponse | null>(null);
+  const [isLoadingRoute, setIsLoadingRoute] = useState(false);
+  const [routeError, setRouteError] = useState<string | null>(null);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -230,6 +234,36 @@ export const ScanToPayScreen = (): JSX.Element => {
     setDetectedWallet(walletData);
     setPaymentAmount(walletData.amount || '');
     setShowDemoPrompt(false);
+    
+    // Detect route if wallet is connected
+    if (isConnected && account?.address) {
+      detectPaymentRoute(walletData);
+    }
+  };
+
+  const detectPaymentRoute = async (walletData: WalletAddress) => {
+    if (!account?.address) return;
+    
+    setIsLoadingRoute(true);
+    setRouteError(null);
+    
+    try {
+      // Create QR data string for the API
+      const qrString = `ethereum:${walletData.address}@${walletData.chainId}?token=${walletData.network === 'ethereum' ? 'ETH' : 'USDC'}`;
+      
+      const routeResponse = await apiClient.detectRoute({
+        userWallet: account.address,
+        merchantQR: qrString,
+        amount: paymentAmount || '1.0'
+      });
+      
+      setRouteData(routeResponse);
+    } catch (error: any) {
+      console.error('Route detection failed:', error);
+      setRouteError(error.message || 'Failed to detect payment route');
+    } finally {
+      setIsLoadingRoute(false);
+    }
   };
 
   const handleSampleQRSelect = (qrData: string) => {
@@ -653,19 +687,75 @@ export const ScanToPayScreen = (): JSX.Element => {
                       </p>
                     )}
                   </div>
+
+                  {/* Route Information */}
+                  {isLoadingRoute && (
+                    <div className="bg-[#1F2024] p-4 rounded-xl">
+                      <div className="flex items-center">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#CBAB58] mr-3"></div>
+                        <span className="text-white">Detecting best payment route...</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {routeError && (
+                    <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl">
+                      <div className="flex items-center">
+                        <AlertCircle size={20} className="text-red-500 mr-3" />
+                        <div>
+                          <p className="text-red-500 text-sm font-medium">Route Detection Failed</p>
+                          <p className="text-red-400 text-xs">{routeError}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {routeData && !isLoadingRoute && (
+                    <div className="bg-[#1F2024] p-4 rounded-xl">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="text-white font-medium">Recommended Route</h4>
+                        <div 
+                          className="w-3 h-3 rounded-full" 
+                          style={{ backgroundColor: routeData.recommendedPath.color }}
+                        />
+                      </div>
+                      
+                      {(() => {
+                        const routeDisplay = formatRouteDisplay(routeData.recommendedPath);
+                        return (
+                          <div>
+                            <p className="text-white font-medium">{routeDisplay.title}</p>
+                            <p className="text-[#71727A] text-sm">{routeDisplay.description}</p>
+                            {routeDisplay.canProceed && (
+                              <div className="flex justify-between mt-2 text-xs">
+                                <span className="text-[#CBAB58]">Time: {routeDisplay.estimatedTime}</span>
+                                <span className="text-[#CBAB58]">Cost: {routeDisplay.estimatedCost}</span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex space-x-3">
                   <button
                     onClick={handleSendPayment}
-                    disabled={!paymentAmount || !isConnected || isProcessingPayment}
-                    className="flex-1 bg-[#CBAB58] text-[#1F2024] py-3 rounded-xl font-semibold hover:bg-[#b69843] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    disabled={!paymentAmount || !isConnected || isProcessingPayment || (routeData && !formatRouteDisplay(routeData.recommendedPath).canProceed)}
+                    className={`flex-1 py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center ${
+                      routeData && !formatRouteDisplay(routeData.recommendedPath).canProceed
+                        ? 'bg-[#71727A] text-white'
+                        : 'bg-[#CBAB58] text-[#1F2024] hover:bg-[#b69843]'
+                    }`}
                   >
                     {isProcessingPayment ? (
                       <>
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#1F2024] mr-2"></div>
                         Sending...
                       </>
+                    ) : routeData && !formatRouteDisplay(routeData.recommendedPath).canProceed ? (
+                      'Cannot Send'
                     ) : (
                       <>
                         <Send size={20} className="mr-2" />
@@ -677,6 +767,8 @@ export const ScanToPayScreen = (): JSX.Element => {
                     onClick={() => {
                       setDetectedWallet(null);
                       setPaymentAmount('');
+                      setRouteData(null);
+                      setRouteError(null);
                       setShowDemoPrompt(true);
                     }}
                     className="px-4 py-3 bg-[#1F2024] text-white rounded-xl font-medium hover:bg-[#71727A] transition-colors"
