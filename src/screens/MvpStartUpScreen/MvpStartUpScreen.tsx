@@ -66,3 +66,5 @@ export const MvpStartUpScreen = (): JSX.Element => {
     </div>
   );
 };
+  )
+}
