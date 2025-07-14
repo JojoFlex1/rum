@@ -173,15 +173,11 @@ export const HomeScreen = (): JSX.Element => {
                     {getGreeting()}
                   </h1>
                   <div className="flex items-center">
-                    <MapPin size={20} className="text-[#71727A] mr-2" aria-hidden="true" />
-                    <p className="text-xl text-[#71727A]">Ready to explore</p>
+                    <MapPin size={20} className="text-[#9ca3af] mr-2" aria-hidden="true" />
+                    <p className="text-xl text-[#9ca3af]" aria-label={`Ready to explore ${userLocation}`}>
+                      Ready to explore {userLocation}?
+                    </p>
                   </div>
-                  <p 
-                    className="text-xl text-[#71727A] ml-7" 
-                    aria-label={`Current location: ${userLocation}`}
-                  >
-                    {userLocation}?
-                  </p>
                 </div>
                 <div className="flex items-center space-x-3" role="group" aria-label="Account actions">
                   <AccessibleButton
@@ -273,35 +269,43 @@ export const HomeScreen = (): JSX.Element => {
                 <h2 id="voice-section" className="sr-only">Voice Commands</h2>
                 <AccessibleButton
                   variant="primary"
-                <div className="flex items-center mb-1">
                   onClick={handleVoiceCommand}
-                  <p className="text-xl text-[#71727A]">Ready to explore {userLocation}?</p>
+                  ariaLabel="Start voice command for payments. Say commands like 'Send 100 pesos using scan to pay'"
                   className="w-32 h-32 rounded-full shadow-lg mb-4 hover:shadow-xl"
+                  leftIcon={<Mic size={64} />}
+                >
+                  <span className="sr-only">Voice Command</span>
+                </AccessibleButton>
+                <p className="text-[#9ca3af] text-center" aria-hidden="true">
+                  Tap to speak your payment
+                </p>
               </section>
 
               {/* Quick Actions */}
-              <section className="flex justify-center items-center space-x-8 mb-24 px-4" aria-labelledby="quick-actions">
+              <section className="mb-24" aria-labelledby="quick-actions">
                 <h2 id="quick-actions" className="sr-only">Quick Actions</h2>
-                <AccessibleButton
-                  variant="primary"
-                  size="lg"
-                  onClick={handleSendPayment}
-                  ariaLabel="Send payment to someone using voice commands or manual input"
-                  className="flex-1 max-w-[140px] shadow-lg hover:shadow-xl"
-                  leftIcon={<Send size={20} />}
-                >
-                  Send
-                </AccessibleButton>
-                <AccessibleButton
-                  variant="primary"
-                  size="lg"
-                  onClick={handleCollectNFTs}
-                  ariaLabel="Collect NFTs and rewards by scanning QR codes or exploring nearby locations"
-                  className="flex-1 max-w-[140px] shadow-lg hover:shadow-xl"
-                  leftIcon={<Zap size={20} />}
-                >
-                  Collect
-                </AccessibleButton>
+                <div className="flex justify-center space-x-6">
+                  <AccessibleButton
+                    variant="primary"
+                    size="lg"
+                    onClick={handleSendPayment}
+                    ariaLabel="Send payment to someone using voice commands or manual input"
+                    className="w-36 shadow-lg hover:shadow-xl"
+                    leftIcon={<Send size={20} />}
+                  >
+                    Send
+                  </AccessibleButton>
+                  <AccessibleButton
+                    variant="primary"
+                    size="lg"
+                    onClick={handleCollectNFTs}
+                    ariaLabel="Collect NFTs and rewards by scanning QR codes or exploring nearby locations"
+                    className="w-36 shadow-lg hover:shadow-xl"
+                    leftIcon={<Zap size={20} />}
+                  >
+                    Collect
+                  </AccessibleButton>
+                </div>
               </section>
             </main>
 
@@ -310,6 +314,5 @@ export const HomeScreen = (): JSX.Element => {
         </div>
       </div>
     </div>
-  )
   );
 };
