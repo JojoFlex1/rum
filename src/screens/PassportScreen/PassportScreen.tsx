@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, MapPin, Trophy, Star, Globe, Users, Award, Crown, TrendingUp, Calendar, Filter, ChevronRight, Medal, Zap } from "lucide-react";
+import { ArrowLeft, Trophy, Medal, Award, Crown, Star, Users, TrendingUp, Calendar, Filter, ChevronRight, MapPin, Globe, Zap } from "lucide-react";
 import { NavigationBar } from "../../components/ui/navigation-bar";
 import { getTopCollectors, getUserStats, mockLeaderboard } from "../../lib/social-gamification";
 import { formatPointsWithUSD, formatUSDFromPoints, getPointsTier } from "../../lib/points-system";
@@ -196,7 +196,7 @@ export const PassportScreen = (): JSX.Element => {
           </div>
         </header>
 
-        <div className="flex flex-col pt-[58px] pb-[83px]">
+        <div className="flex flex-col pt-[58px] pb-[100px]">
           <div className="flex items-center px-4 mb-6">
             <button 
               onClick={() => navigate(-1)}
@@ -222,7 +222,7 @@ export const PassportScreen = (): JSX.Element => {
                 </div>
                 <div className="text-right">
                   <p className="text-[#1F2024] text-2xl font-bold">{totalPoints.toLocaleString()}</p>
-                  <p className="text-[#1F2024]/70 text-sm">{formatUSDFromPoints(totalPoints)} value</p>
+                  <p className="text-[#1F2024]/70 text-sm">Points</p>
                 </div>
               </div>
               
@@ -250,7 +250,7 @@ export const PassportScreen = (): JSX.Element => {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex-1 py-2 px-2 rounded-lg text-xs font-medium transition-colors ${
                     activeTab === tab
                       ? 'bg-[#CBAB58] text-[#1F2024]'
                       : 'text-white hover:bg-[#1F2024]'
@@ -267,13 +267,13 @@ export const PassportScreen = (): JSX.Element => {
           {/* Tab Content */}
           {activeTab === 'overview' && (
             <div className="px-4 space-y-6">
-              {/* Points Staking Info */}
+              {/* Points Progress */}
               <div className="bg-[#2C2D32] rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-white font-semibold">This Month</h3>
                   <div className="text-right">
-                    <span className="text-[#CBAB58] font-bold">+248 pts</span>
-                    <p className="text-[#71727A] text-xs">{formatUSDFromPoints(248)} earned</p>
+                    <span className="text-[#CBAB58] font-bold">+{totalPoints} pts</span>
+                    <p className="text-[#71727A] text-xs">earned</p>
                   </div>
                 </div>
                 <div className="h-2 bg-[#1F2024] rounded-full overflow-hidden mb-2">
@@ -447,7 +447,7 @@ export const PassportScreen = (): JSX.Element => {
                 </div>
               </div>
 
-              {/* Connections Made */}
+              {/* Social Stats */}
               <div className="bg-[#2C2D32] rounded-2xl p-6">
                 <h3 className="text-white font-semibold mb-4">Social Stats</h3>
                 <div className="flex items-center justify-between mb-4">
