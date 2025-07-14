@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../../components/ui/card";
 
 export const MvpStartUpScreen = (): JSX.Element => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Auto-navigate to login screen after 3 seconds
+    const timer = setTimeout(() => {
+      navigate("/login");
+    }, 3000);
+
+    // Cleanup timer on component unmount
+    return () => clearTimeout(timer);
+  }, [navigate]);
 
   return (
     <div className="flex justify-center w-full bg-transparent">
@@ -51,14 +61,6 @@ export const MvpStartUpScreen = (): JSX.Element => {
                 </h1>
               </CardContent>
             </Card>
-
-            {/* Get Started Button */}
-            <button
-              onClick={() => navigate("/login")}
-              className="absolute bottom-32 left-1/2 transform -translate-x-1/2 px-8 py-3 bg-[#cbab58] text-white font-semibold rounded-lg hover:bg-[#b69843]"
-            >
-              Get Started
-            </button>
           </div>
         </div>
       </div>
