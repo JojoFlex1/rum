@@ -143,60 +143,6 @@ export const getPointsTier = (lifetimePoints: number): {
   }
 };
 
-// Recent points transactions
-export const mockPointsHistory: PointsTransaction[] = [
-  {
-    id: '1',
-    userId: 'user1',
-    amount: 87,
-    type: 'earned',
-    source: 'payment',
-    description: 'Payment at La Cabrera',
-    timestamp: '2024-08-15T14:30:00Z',
-    metadata: { transactionId: 'tx_001' }
-  },
-  {
-    id: '2',
-    userId: 'user1',
-    amount: 10,
-    type: 'earned',
-    source: 'payment',
-    description: 'Payment at Café Martinez',
-    timestamp: '2024-08-15T10:15:00Z',
-    metadata: { transactionId: 'tx_002' }
-  },
-  {
-    id: '3',
-    userId: 'user1',
-    amount: 800,
-    type: 'earned',
-    source: 'collectible',
-    description: 'Teatro Colón NFT collected',
-    timestamp: '2024-08-14T16:45:00Z',
-    metadata: { collectibleId: 'nft_001' }
-  },
-  {
-    id: '4',
-    userId: 'user1',
-    amount: 300,
-    type: 'earned',
-    source: 'referral',
-    description: 'Friend joined AURUM',
-    timestamp: '2024-08-13T12:00:00Z',
-    metadata: { referralId: 'ref_001' }
-  },
-  {
-    id: '5',
-    userId: 'user1',
-    amount: -5000,
-    type: 'redeemed',
-    source: 'offer',
-    description: 'Wine Tasting Experience',
-    timestamp: '2024-08-12T18:30:00Z',
-    metadata: { offerId: 'offer_001' }
-  }
-];
-
 // Calculate total points from transaction history
 export const calculateTotalPointsFromHistory = (transactions: PointsTransaction[]): UserPointsBalance => {
   const earned = transactions

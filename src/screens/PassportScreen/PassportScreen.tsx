@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, MapPin, Trophy, Star, Globe, Users, Award, Crown, TrendingUp, Calendar, Filter, ChevronRight, Medal, Zap } from "lucide-react";
 import { NavigationBar } from "../../components/ui/navigation-bar";
 import { getTopCollectors, getUserStats, mockLeaderboard } from "../../lib/social-gamification";
-import { mockUserPoints, formatPointsWithUSD, formatUSDFromPoints, getPointsTier } from "../../lib/points-system";
+import { formatPointsWithUSD, formatUSDFromPoints, getPointsTier } from "../../lib/points-system";
+import { useTransactions } from "../../hooks/useTransactions";
 
 const cities = [
   {
@@ -108,13 +109,13 @@ export const PassportScreen = (): JSX.Element => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'collection' | 'stats' | 'leaderboard'>('overview');
   const [collectionFilter, setCollectionFilter] = useState<'all' | 'legendary' | 'epic' | 'rare'>('all');
+  const { totalPoints } = useTransactions();
   
   const currentUserId = 'user1';
   const userStats = getUserStats(currentUserId);
   const topCollectors = getTopCollectors(5);
-  const userTier = getPointsTier(mockUserPoints.lifetimeEarned);
+  const userTier = getPointsTier(totalPoints);
   const totalCollectibles = cities.reduce((sum, city) => sum + city.collectibles, 0);
-  const totalPoints = mockUserPoints.totalPoints;
   const totalConnections = cities.reduce((sum, city) => sum + city.connections, 0);
 
   const getRarityColor = (rarity: string) => {

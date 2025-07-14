@@ -2,7 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, Clock, MapPin, Lock } from "lucide-react";
 import { NavigationBar } from "../../components/ui/navigation-bar";
-import { mockUserPoints, canRedeemOffer, formatUSDFromPoints } from "../../lib/points-system";
+import { canRedeemOffer, formatUSDFromPoints } from "../../lib/points-system";
+import { useTransactions } from "../../hooks/useTransactions";
 
 const offers = [
   {
@@ -39,9 +40,10 @@ const offers = [
 
 export const OffersScreen = (): JSX.Element => {
   const navigate = useNavigate();
+  const { totalPoints } = useTransactions();
 
   const isOfferAvailable = (requiredPoints: number) => {
-    return canRedeemOffer(mockUserPoints.totalPoints, requiredPoints);
+    return canRedeemOffer(totalPoints, requiredPoints);
   };
 
   return (
@@ -135,7 +137,7 @@ export const OffersScreen = (): JSX.Element => {
                       ) : (
                         <>
                           <Lock size={16} />
-                          <span>Need {(offer.points - mockUserPoints.totalPoints).toLocaleString()} more points</span>
+                          <span>Need {(offer.points - totalPoints).toLocaleString()} more points</span>
                         </>
                       )}
                     </button>

@@ -2,10 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Users, Share2, Trophy, Twitter, Instagram, Facebook, Settings, Edit3, Camera, MapPin } from "lucide-react";
 import { NavigationBar } from "../../components/ui/navigation-bar";
-import { mockUserPoints, formatUSDFromPoints, calculateReferralBonus } from "../../lib/points-system";
+import { formatUSDFromPoints, calculateReferralBonus } from "../../lib/points-system";
+import { useTransactions } from "../../hooks/useTransactions";
 
 export const ConnectScreen = (): JSX.Element => {
   const navigate = useNavigate();
+  const { totalPoints } = useTransactions();
   
   // Get user profile data (in real app, this would come from auth context)
   const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
@@ -94,8 +96,8 @@ export const ConnectScreen = (): JSX.Element => {
                   <p className="text-[#71727A] text-xs">Friends</p>
                 </div>
                 <div>
-                  <p className="text-white text-xl font-bold">{mockUserPoints.totalPoints.toLocaleString()}</p>
-                  <p className="text-[#71727A] text-xs">{formatUSDFromPoints(mockUserPoints.totalPoints)} value</p>
+                  <p className="text-white text-xl font-bold">{totalPoints.toLocaleString()}</p>
+                  <p className="text-[#71727A] text-xs">{formatUSDFromPoints(totalPoints)} value</p>
                 </div>
               </div>
             </div>

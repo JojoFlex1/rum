@@ -95,52 +95,6 @@ class TransactionStore {
     this.transactions = [];
     this.saveTransactions();
   }
-
-  // Add some demo transactions for testing
-  addDemoTransactions() {
-    const demoTransactions = [
-      {
-        title: "La Cabrera",
-        date: "Aug 15, 2025",
-        amount_ars: 87209,
-        amount_crypto: 75.00,
-        crypto_symbol: "USDC",
-        payment_method: 'crypto' as const,
-        category: "Restaurant",
-        transaction_hash: "0xabc123...",
-        wallet_address: "0x742d35Cc6634C0532925a3b8D4C9db7C4C4C4C4C",
-        network: "ethereum"
-      },
-      {
-        title: "Café Martinez",
-        date: "Aug 15, 2025",
-        amount_ars: 9884,
-        amount_crypto: 8.50,
-        crypto_symbol: "USDC",
-        payment_method: 'cash' as const,
-        category: "Coffee Shop"
-      },
-      {
-        title: "Teatro Colón",
-        date: "Aug 14, 2025",
-        amount_ars: 34884,
-        amount_crypto: 30.00,
-        crypto_symbol: "USDC",
-        payment_method: 'crypto' as const,
-        category: "Tourism",
-        transaction_hash: "0xdef456...",
-        wallet_address: "0x742d35Cc6634C0532925a3b8D4C9db7C4C4C4C4C",
-        network: "ethereum"
-      }
-    ];
-
-    demoTransactions.forEach(tx => this.addTransaction(tx));
-  }
 }
 
 export const transactionStore = new TransactionStore();
-
-// Initialize with demo data if no transactions exist
-if (transactionStore.getTransactions().length === 0) {
-  transactionStore.addDemoTransactions();
-}
