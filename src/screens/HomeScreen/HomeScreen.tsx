@@ -273,27 +273,21 @@ export const HomeScreen = (): JSX.Element => {
                 <h2 id="voice-section" className="sr-only">Voice Commands</h2>
                 <AccessibleButton
                   variant="primary"
-                  size="xl"
+                <div className="flex items-center mb-1">
                   onClick={handleVoiceCommand}
-                  ariaLabel="Open voice command interface for payments. Say commands like 'Send 100 pesos' or 'Pay with scan'"
+                  <p className="text-xl text-[#71727A]">Ready to explore {userLocation}?</p>
                   className="w-32 h-32 rounded-full shadow-lg mb-4 hover:shadow-xl"
-                  leftIcon={<Mic size={64} className="text-[#1F2024]" />}
-                />
-                <p className="text-white/90 text-sm font-medium">Tap to speak</p>
-                <p className="text-white/60 text-xs text-center mt-1 max-w-[200px]">
-                  Try: "Send 100 pesos" or "Scan to pay"
-                </p>
               </section>
 
               {/* Quick Actions */}
-              <section className="flex justify-center space-x-12 mb-24" aria-labelledby="quick-actions">
+              <section className="flex justify-center items-center space-x-8 mb-24 px-4" aria-labelledby="quick-actions">
                 <h2 id="quick-actions" className="sr-only">Quick Actions</h2>
                 <AccessibleButton
                   variant="primary"
                   size="lg"
                   onClick={handleSendPayment}
                   ariaLabel="Send payment to someone using voice commands or manual input"
-                  className="w-36 shadow-lg hover:shadow-xl"
+                  className="flex-1 max-w-[140px] shadow-lg hover:shadow-xl"
                   leftIcon={<Send size={20} />}
                 >
                   Send
@@ -303,7 +297,7 @@ export const HomeScreen = (): JSX.Element => {
                   size="lg"
                   onClick={handleCollectNFTs}
                   ariaLabel="Collect NFTs and rewards by scanning QR codes or exploring nearby locations"
-                  className="w-36 shadow-lg hover:shadow-xl"
+                  className="flex-1 max-w-[140px] shadow-lg hover:shadow-xl"
                   leftIcon={<Zap size={20} />}
                 >
                   Collect
