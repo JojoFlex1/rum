@@ -38,9 +38,6 @@ export const MvpStartUpScreen = (): JSX.Element => {
               </header>
             </div>
 
-            {/* Logo */}
-            <div className="absolute w-[257px] h-[260px] top-[91px] left-[68px] bg-[url(/screenshot-2025-02-02-at-10-49-52-am-3.png)] bg-[100%_100%]" />
-
             {/* Tagline */}
             <Card className="absolute w-[345px] top-[439px] left-6 border-none bg-transparent shadow-none">
               <CardContent className="p-0">
