@@ -11,7 +11,7 @@ export const MvpStartUpScreen = (): JSX.Element => {
         <div className="w-full h-full">
           <div className="relative w-full h-full">
             {/* Background Image */}
-            <div className="absolute inset-0 w-full h-full [background:url(..//background.png)_50%_50%_/_cover]">
+            <div className="absolute inset-0 w-full h-full [background:url(../background.png)_50%_50%_/_cover]">
               {/* Status Bar */}
               <header className="relative h-[42px] bg-white backdrop-blur-[20px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(20px)_brightness(100%)] shadow-frosted-glass">
                 <div className="absolute w-14 h-[17px] top-[13px] left-[21px]">
@@ -59,12 +59,9 @@ export const MvpStartUpScreen = (): JSX.Element => {
             >
               Get Started
             </button>
-
-            {/* Powered By Logo */}
+          </div>
         </div>
       </div>
     </div>
   );
 };
-  )
-}
