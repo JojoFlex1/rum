@@ -221,7 +221,7 @@ export const HomeScreen = (): JSX.Element => {
                       {mockUserPoints.totalPoints.toLocaleString()}
                     </p>
                     <p className="text-[#E1C87D] text-xs font-medium" aria-hidden="true">
-                      {formatUSDFromPoints(mockUserPoints.totalPoints)}
+                      Points
                     </p>
                   </div>
                 </div>
