@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Card, CardContent } from "../../components/ui/card";
 import { Home, History, Import as Passport, Mic, CreditCard, Award, Gift, Settings, MapPin, LogOut, Users, Zap, Send } from "lucide-react";
 import { useAuth } from "../../components/AuthProvider";
+import { NavigationBar } from "../../components/ui/navigation-bar";
+import { SkipLink } from "../../components/SkipLink";
+import { LiveRegion } from "../../components/LiveRegion";
+import { AccessibleButton } from "../../components/AccessibleButton";
+import { useAnnouncement } from "../../hooks/useAnnouncement";
+import { useFocusManagement } from "../../hooks/useFocusManagement";
 import { mockUserPoints, formatPointsWithUSD, formatUSDFromPoints, getPointsTier } from "../../lib/points-system";
 
 export const HomeScreen = (): JSX.Element => {
@@ -10,6 +15,8 @@ export const HomeScreen = (): JSX.Element => {
   const location = useLocation();
   const { user, signOut } = useAuth();
   const [userLocation, setUserLocation] = useState<string>("Buenos Aires");
+  const { announcement, announce } = useAnnouncement();
+  const { elementRef: mainRef } = useFocusManagement(true);
 
   // Get user profile data
   const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
@@ -17,6 +24,9 @@ export const HomeScreen = (): JSX.Element => {
   const userTier = getPointsTier(mockUserPoints.lifetimeEarned);
 
   useEffect(() => {
+    // Announce page load
+    announce("Home screen loaded. Ready to explore payments and rewards.");
+
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
@@ -27,6 +37,7 @@ export const HomeScreen = (): JSX.Element => {
             const data = await response.json();
             const city = data.address.city || data.address.town || data.address.village || "Buenos Aires";
             setUserLocation(city);
+            announce(`Location updated to ${city}`);
           } catch (error) {
             console.error("Error fetching location:", error);
             setUserLocation("Buenos Aires");
@@ -38,15 +49,32 @@ export const HomeScreen = (): JSX.Element => {
         }
       );
     }
-  }, []);
+  }, [announce]);
 
   const handleLogout = async () => {
     try {
       await signOut();
+      announce("Signed out successfully");
       navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
+      announce("Error signing out. Please try again.");
     }
+  };
+
+  const handleVoiceCommand = () => {
+    announce("Opening voice command interface");
+    navigate("/voice-command");
+  };
+
+  const handleSendPayment = () => {
+    announce("Opening payment interface");
+    navigate("/voice-command");
+  };
+
+  const handleCollectNFTs = () => {
+    announce("Opening collectibles interface");
+    navigate("/collectibles");
   };
 
   const getUserName = () => {
@@ -80,6 +108,9 @@ export const HomeScreen = (): JSX.Element => {
 
   return (
     <div className="flex justify-center w-full bg-[#1F2024]">
+      <SkipLink />
+      <LiveRegion message={announcement} />
+      
       <div className="relative w-[393px] h-[853px] overflow-hidden">
         <div className="w-full h-full">
           <div className="relative w-full h-full">
@@ -87,170 +118,200 @@ export const HomeScreen = (): JSX.Element => {
             <div className="absolute inset-0 w-full h-full">
               <img 
                 src="https://images.pexels.com/photos/1533720/pexels-photo-1533720.jpeg"
-                alt="Early morning ocean sunrise with waves"
+                alt="Early morning ocean sunrise with gentle waves creating a peaceful atmosphere"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-black/20" />
+              <div className="absolute inset-0 bg-black/20" aria-hidden="true" />
             </div>
 
             {/* Status Bar */}
-            <header className="relative h-[42px] bg-transparent">
+            <header className="relative h-[42px] bg-transparent" role="banner">
               <div className="absolute w-14 h-[17px] top-[13px] left-[21px]">
-                <div className="absolute w-[54px] -top-px left-0 [font-family:'SF_Pro_Text-Semibold',Helvetica] font-normal text-white text-[15px] text-center tracking-[-0.17px] leading-[normal]">
+                <time 
+                  className="absolute w-[54px] -top-px left-0 [font-family:'SF_Pro_Text-Semibold',Helvetica] font-normal text-white text-[15px] text-center tracking-[-0.17px] leading-[normal]"
+                  dateTime="03:33"
+                  aria-label="Current time: 3:33"
+                >
                   3:33
-                </div>
+                </time>
               </div>
 
-              <div className="absolute w-[68px] h-3.5 top-[15px] left-[311px] overflow-hidden">
-                <div className="absolute -top-1 left-[41px] [font-family:'SF_Pro_Text-Regular',Helvetica] font-normal text-white text-[17px] tracking-[0] leading-[normal] whitespace-nowrap">
+              <div className="absolute w-[68px] h-3.5 top-[15px] left-[311px] overflow-hidden" aria-label="Device status indicators">
+                <div 
+                  className="absolute -top-1 left-[41px] [font-family:'SF_Pro_Text-Regular',Helvetica] font-normal text-white text-[17px] tracking-[0] leading-[normal] whitespace-nowrap" 
+                  aria-label="Battery at full charge"
+                >
                   􀛨
                 </div>
 
                 <img
                   className="absolute w-[17px] h-[11px] top-0.5 left-0"
-                  alt="Signal"
+                  alt="Full signal strength"
                   src="/signal.svg"
                 />
 
-                <div className="absolute -top-0.5 left-[21px] [font-family:'SF_Pro_Text-Regular',Helvetica] font-normal text-white text-sm tracking-[0] leading-[normal]">
+                <div 
+                  className="absolute -top-0.5 left-[21px] [font-family:'SF_Pro_Text-Regular',Helvetica] font-normal text-white text-sm tracking-[0] leading-[normal]" 
+                  aria-label="WiFi connected"
+                >
                   􀙇
                 </div>
               </div>
             </header>
 
             {/* Main Content */}
-            <div className="flex flex-col px-6 pt-4 h-[calc(100%-42px)] relative">
-              <div className="flex items-center justify-between mb-8">
+            <main 
+              id="main-content"
+              ref={mainRef}
+              className="flex flex-col px-6 pt-4 h-[calc(100%-42px)] relative"
+              tabIndex={-1}
+            >
+              {/* Header Section */}
+              <section className="flex items-center justify-between mb-8" aria-labelledby="welcome-heading">
                 <div>
-                  <h1 className="text-3xl font-bold text-white mb-2">
+                  <h1 id="welcome-heading" className="text-3xl font-bold text-white mb-2">
                     {getGreeting()}
                   </h1>
                   <div className="flex items-center">
-                    <MapPin size={20} className="text-[#71727A] mr-2" />
+                    <MapPin size={20} className="text-[#71727A] mr-2" aria-hidden="true" />
                     <p className="text-xl text-[#71727A]">Ready to explore</p>
                   </div>
-                  <p className="text-xl text-[#71727A] ml-7">{userLocation}?</p>
+                  <p 
+                    className="text-xl text-[#71727A] ml-7" 
+                    aria-label={`Current location: ${userLocation}`}
+                  >
+                    {userLocation}?
+                  </p>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <button 
+                <div className="flex items-center space-x-3" role="group" aria-label="Account actions">
+                  <AccessibleButton
+                    variant="ghost"
+                    size="sm"
                     onClick={handleLogout}
-                    className="w-10 h-10 rounded-full bg-[#2C2D32]/50 flex items-center justify-center"
-                  >
-                    <LogOut size={20} className="text-white/60" />
-                  </button>
-                  <button 
+                    ariaLabel="Sign out of account"
+                    className="w-10 h-10 rounded-full bg-[#2C2D32]/50 hover:bg-[#2C2D32]/70 p-0"
+                    leftIcon={<LogOut size={20} className="text-white/60" />}
+                  />
+                  <AccessibleButton
+                    variant="ghost"
+                    size="sm"
                     onClick={() => navigate("/create-profile")}
-                    className="w-10 h-10 rounded-full bg-[#2C2D32]/50 flex items-center justify-center"
-                  >
-                    <Settings size={20} className="text-white/60" />
-                  </button>
+                    ariaLabel="Edit profile settings"
+                    className="w-10 h-10 rounded-full bg-[#2C2D32]/50 hover:bg-[#2C2D32]/70 p-0"
+                    leftIcon={<Settings size={20} className="text-white/60" />}
+                  />
                 </div>
-              </div>
+              </section>
 
-              {/* Points, Connections, and Collectibles Summary */}
-              <div className="grid grid-cols-3 gap-4 mb-8">
-                <div className="bg-[#2C2D32]/40 backdrop-blur-lg rounded-2xl p-4">
+              {/* Stats Summary */}
+              <section className="grid grid-cols-3 gap-4 mb-8" aria-labelledby="stats-heading">
+                <h2 id="stats-heading" className="sr-only">Account Statistics</h2>
+                
+                <div 
+                  className="bg-[#2C2D32]/40 backdrop-blur-lg rounded-2xl p-4 focus-within:ring-2 focus-within:ring-[#CBAB58] focus-within:ring-offset-2 focus-within:ring-offset-transparent" 
+                  role="group" 
+                  aria-labelledby="points-stat"
+                  tabIndex={0}
+                >
                   <div className="flex flex-col items-center">
-                    <div className="w-12 h-12 rounded-full bg-[#CBAB58] flex items-center justify-center mb-2">
+                    <div className="w-12 h-12 rounded-full bg-[#CBAB58] flex items-center justify-center mb-2" aria-hidden="true">
                       <Award size={24} className="text-[#1F2024]" />
                     </div>
-                    <p className="text-white text-lg font-bold">{mockUserPoints.totalPoints.toLocaleString()}</p>
-                    <p className="text-[#E1C87D] text-xs font-medium">{formatUSDFromPoints(mockUserPoints.totalPoints)}</p>
+                    <p 
+                      id="points-stat" 
+                      className="text-white text-lg font-bold" 
+                      aria-label={`${mockUserPoints.totalPoints.toLocaleString()} reward points worth ${formatUSDFromPoints(mockUserPoints.totalPoints)}`}
+                    >
+                      {mockUserPoints.totalPoints.toLocaleString()}
+                    </p>
+                    <p className="text-[#E1C87D] text-xs font-medium" aria-hidden="true">
+                      {formatUSDFromPoints(mockUserPoints.totalPoints)}
+                    </p>
                   </div>
                 </div>
-                <div className="bg-[#2C2D32]/40 backdrop-blur-lg rounded-2xl p-4">
+
+                <div 
+                  className="bg-[#2C2D32]/40 backdrop-blur-lg rounded-2xl p-4 focus-within:ring-2 focus-within:ring-[#CBAB58] focus-within:ring-offset-2 focus-within:ring-offset-transparent" 
+                  role="group" 
+                  aria-labelledby="friends-stat"
+                  tabIndex={0}
+                >
                   <div className="flex flex-col items-center">
-                    <div className="w-12 h-12 rounded-full bg-[#CBAB58] flex items-center justify-center mb-2">
+                    <div className="w-12 h-12 rounded-full bg-[#CBAB58] flex items-center justify-center mb-2" aria-hidden="true">
                       <Users size={24} className="text-[#1F2024]" />
                     </div>
-                    <p className="text-white text-xl font-bold">11</p>
+                    <p id="friends-stat" className="text-white text-xl font-bold" aria-label="11 connected friends">
+                      11
+                    </p>
                     <p className="text-[#E1C87D] text-xs font-medium">Friends</p>
                   </div>
                 </div>
-                <div className="bg-[#2C2D32]/40 backdrop-blur-lg rounded-2xl p-4">
+
+                <div 
+                  className="bg-[#2C2D32]/40 backdrop-blur-lg rounded-2xl p-4 focus-within:ring-2 focus-within:ring-[#CBAB58] focus-within:ring-offset-2 focus-within:ring-offset-transparent" 
+                  role="group" 
+                  aria-labelledby="nfts-stat"
+                  tabIndex={0}
+                >
                   <div className="flex flex-col items-center">
-                    <div className="w-12 h-12 rounded-full bg-[#CBAB58] flex items-center justify-center mb-2">
+                    <div className="w-12 h-12 rounded-full bg-[#CBAB58] flex items-center justify-center mb-2" aria-hidden="true">
                       <Gift size={24} className="text-[#1F2024]" />
                     </div>
-                    <p className="text-white text-xl font-bold">70</p>
+                    <p id="nfts-stat" className="text-white text-xl font-bold" aria-label="70 collected NFTs">
+                      70
+                    </p>
                     <p className="text-[#E1C87D] text-xs font-medium">NFTs</p>
                   </div>
                 </div>
-              </div>
+              </section>
 
               {/* Spacer to push content down */}
               <div className="flex-grow" />
 
-              {/* Voice Command Button */}
-              <div className="flex flex-col items-center mb-8">
-                <button 
-                  onClick={() => navigate("/voice-command")}
-                  className="w-32 h-32 rounded-full bg-[#CBAB58] flex items-center justify-center shadow-lg mb-4"
-                >
-                  <Mic size={64} className="text-[#1F2024]" />
-                </button>
+              {/* Voice Command Section */}
+              <section className="flex flex-col items-center mb-8" aria-labelledby="voice-section">
+                <h2 id="voice-section" className="sr-only">Voice Commands</h2>
+                <AccessibleButton
+                  variant="primary"
+                  size="xl"
+                  onClick={handleVoiceCommand}
+                  ariaLabel="Open voice command interface for payments. Say commands like 'Send 100 pesos' or 'Pay with scan'"
+                  className="w-32 h-32 rounded-full shadow-lg mb-4 hover:shadow-xl"
+                  leftIcon={<Mic size={64} className="text-[#1F2024]" />}
+                />
                 <p className="text-white/90 text-sm font-medium">Tap to speak</p>
-              </div>
+                <p className="text-white/60 text-xs text-center mt-1 max-w-[200px]">
+                  Try: "Send 100 pesos" or "Scan to pay"
+                </p>
+              </section>
 
               {/* Quick Actions */}
-              <div className="flex justify-center space-x-12 mb-24">
-                <button 
-                  onClick={() => navigate("/voice-command")}
-                  className="w-36 h-12 rounded-2xl bg-[#CBAB58] flex items-center justify-center shadow-lg"
+              <section className="flex justify-center space-x-12 mb-24" aria-labelledby="quick-actions">
+                <h2 id="quick-actions" className="sr-only">Quick Actions</h2>
+                <AccessibleButton
+                  variant="primary"
+                  size="lg"
+                  onClick={handleSendPayment}
+                  ariaLabel="Send payment to someone using voice commands or manual input"
+                  className="w-36 shadow-lg hover:shadow-xl"
+                  leftIcon={<Send size={20} />}
                 >
-                  <Send size={20} className="text-[#1F2024] mr-1" />
-                  <span className="text-[#1F2024] font-medium">Send</span>
-                </button>
-                <button 
-                  onClick={() => navigate("/collectibles")}
-                  className="w-36 h-12 rounded-2xl bg-[#CBAB58] flex items-center justify-center shadow-lg"
+                  Send
+                </AccessibleButton>
+                <AccessibleButton
+                  variant="primary"
+                  size="lg"
+                  onClick={handleCollectNFTs}
+                  ariaLabel="Collect NFTs and rewards by scanning QR codes or exploring nearby locations"
+                  className="w-36 shadow-lg hover:shadow-xl"
+                  leftIcon={<Zap size={20} />}
                 >
-                  <Zap size={20} className="text-[#1F2024] mr-1" />
-                  <span className="text-[#1F2024] font-medium">Collect</span>
-                </button>
-              </div>
+                  Collect
+                </AccessibleButton>
+              </section>
+            </main>
 
-              {/* Navigation Bar */}
-              <div className="absolute bottom-0 left-0 right-0 h-[83px] bg-[#1F2024]/80 backdrop-blur-lg border-t border-white/10">
-                <div className="flex justify-around items-center h-full">
-                  <button 
-                    onClick={() => navigate("/payments")}
-                    className="flex flex-col items-center"
-                  >
-                    <CreditCard size={24} className={location.pathname === "/payments" ? "text-[#E1C87D]" : "text-white/80"} />
-                    <span className={location.pathname === "/payments" ? "text-[#E1C87D] text-xs mt-1 font-medium" : "text-white/80 text-xs mt-1"}>Wallet</span>
-                  </button>
-                  <button 
-                    onClick={() => navigate("/offers")}
-                    className="flex flex-col items-center"
-                  >
-                    <Gift size={24} className={location.pathname === "/offers" ? "text-[#E1C87D]" : "text-white/80"} />
-                    <span className={location.pathname === "/offers" ? "text-[#E1C87D] text-xs mt-1 font-medium" : "text-white/80 text-xs mt-1"}>Offers</span>
-                  </button>
-                  <button 
-                    onClick={() => navigate("/home")}
-                    className="flex flex-col items-center"
-                  >
-                    <Home size={24} className={location.pathname === "/home" ? "text-[#E1C87D]" : "text-white/80"} />
-                    <span className={location.pathname === "/home" ? "text-[#E1C87D] text-xs mt-1 font-medium" : "text-white/80 text-xs mt-1"}>Home</span>
-                  </button>
-                  <button 
-                    onClick={() => navigate("/history")}
-                    className="flex flex-col items-center"
-                  >
-                    <History size={24} className={location.pathname === "/history" ? "text-[#E1C87D]" : "text-white/80"} />
-                    <span className={location.pathname === "/history" ? "text-[#E1C87D] text-xs mt-1 font-medium" : "text-white/80 text-xs mt-1"}>History</span>
-                  </button>
-                  <button 
-                    onClick={() => navigate("/passport")}
-                    className="flex flex-col items-center"
-                  >
-                    <Passport size={24} className={location.pathname === "/passport" ? "text-[#E1C87D]" : "text-white/80"} />
-                    <span className={location.pathname === "/passport" ? "text-[#E1C87D] text-xs mt-1 font-medium" : "text-white/80 text-xs mt-1"}>Passport</span>
-                  </button>
-                </div>
-              </div>
-            </div>
+            <NavigationBar />
           </div>
         </div>
       </div>
