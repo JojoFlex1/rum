@@ -61,14 +61,6 @@ export const MvpStartUpScreen = (): JSX.Element => {
             </button>
 
             {/* Powered By Logo */}
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-              <img
-                src="/logotext_poweredby_360w.png"
-                alt="Powered by"
-                className="h-8 opacity-80"
-              />
-            </div>
-          </div>
         </div>
       </div>
     </div>
