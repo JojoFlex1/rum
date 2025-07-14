@@ -52,7 +52,7 @@ export const formatUSDFromPoints = (points: number): string => {
 
 // Calculate points earned from payment amount
 export const calculatePaymentPoints = (amountUSD: number): number => {
-  // 1 point per $1 spent (so $10 = 10 points = $1 value back = 10% cashback)
+  // 1 point per $1 spent
   return Math.floor(amountUSD);
 };
 
@@ -141,16 +141,6 @@ export const getPointsTier = (lifetimePoints: number): {
       benefits: ['Standard points earning', 'Basic offers']
     };
   }
-};
-
-// Mock user points data
-export const mockUserPoints: UserPointsBalance = {
-  totalPoints: 11000,
-  availablePoints: 11000,
-  pendingPoints: 0,
-  lifetimeEarned: 15000,
-  lifetimeRedeemed: 4000,
-  usdValue: pointsToUSD(11000) // $1,100
 };
 
 // Recent points transactions

@@ -3,11 +3,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { CheckCircle2, Clock, Award, ExternalLink, Copy } from "lucide-react";
 import { NavigationBar } from "../../components/ui/navigation-bar";
 import { formatAddressForDisplay, getNetworkDisplayName, getNetworkColor } from "../../lib/crypto-utils";
-import { calculatePaymentPoints, formatPointsWithUSD, formatUSDFromPoints } from "../../lib/points-system";
+import { formatPointsWithUSD, formatUSDFromPoints } from "../../lib/points-system";
+import { useTransactions } from "../../hooks/useTransactions";
 
 export const PaymentConfirmationScreen = (): JSX.Element => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { addTransaction } = useTransactions();
+  
   const requestedAmount = location.state?.amount || 10000;
   const walletAddress = location.state?.walletAddress;
   const network = location.state?.network || 'ethereum';
@@ -20,7 +23,31 @@ export const PaymentConfirmationScreen = (): JSX.Element => {
   
   // Calculate points earned (convert ARS to USD first, then calculate points)
   const totalAmountUSD = totalAmount * 0.00086 * 1163; // Convert to USD (rough rate)
-  const pointsEarned = calculatePaymentPoints(totalAmountUSD);
+  const pointsEarned = Math.floor(totalAmountUSD); // 1 point per $1 USD
+
+  useEffect(() => {
+    // Add this transaction to the store when the confirmation screen loads
+    const transactionData = {
+      title: getPaymentMethod() === "cash" ? "ATM Withdrawal" : 
+            getPaymentMethod() === "scan" ? "Scan Payment" : 
+            "Tap Payment",
+      date: new Date().toLocaleDateString("en-US", { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      }),
+      amount_ars: totalAmount,
+      amount_crypto: parseFloat(usdcAmount),
+      crypto_symbol: "USDC",
+      payment_method: getPaymentMethod() as 'crypto' | 'cash' | 'scan' | 'tap',
+      category: getPaymentMethod() === "cash" ? "ATM" : "Payment",
+      transaction_hash: location.state?.transactionHash,
+      wallet_address: walletAddress,
+      network: network
+    };
+
+    addTransaction(transactionData);
+  }, [addTransaction, totalAmount, usdcAmount, walletAddress, network, location.state]);
 
   const getPaymentMethod = () => {
     const path = location.state?.from || "";
