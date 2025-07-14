@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Download, ChevronRight, Wallet, CreditCard, Banknote, QrCode, X, Calendar } from "lucide-react";
 import { NavigationBar } from "../../components/ui/navigation-bar";
-import { calculatePaymentPoints, formatUSDFromPoints } from "../../lib/points-system";
+import { formatUSDFromPoints } from "../../lib/points-system";
+import { useTransactions } from "../../hooks/useTransactions";
 
 export const HistoryScreen = (): JSX.Element => {
   const navigate = useNavigate();
@@ -10,58 +11,8 @@ export const HistoryScreen = (): JSX.Element => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  const transactions = [
-    {
-      id: 1,
-      title: "La Cabrera",
-      date: "Aug 15, 2025",
-      amount: "ARS 87,209",
-      cryptoAmount: "75.00 USDC",
-      paymentMethod: "crypto",
-      category: "Restaurant",
-      pointsEarned: 87
-    },
-    {
-      id: 2,
-      title: "Café Martinez",
-      date: "Aug 15, 2025",
-      amount: "ARS 9,884",
-      cryptoAmount: "8.50 USDC",
-      paymentMethod: "cash",
-      category: "Coffee Shop",
-      pointsEarned: 10
-    },
-    {
-      id: 3,
-      title: "Teatro Colón",
-      date: "Aug 14, 2025",
-      amount: "ARS 34,884",
-      cryptoAmount: "30.00 USDC",
-      paymentMethod: "crypto",
-      category: "Tourism",
-      pointsEarned: 35
-    },
-    {
-      id: 4,
-      title: "BA Taxi",
-      date: "Aug 14, 2025",
-      amount: "ARS 17,442",
-      cryptoAmount: "15.00 USDC",
-      paymentMethod: "cash",
-      category: "Transportation",
-      pointsEarned: 17
-    },
-    {
-      id: 5,
-      title: "Don Julio",
-      date: "Aug 13, 2025",
-      amount: "ARS 98,837",
-      cryptoAmount: "85.00 USDC",
-      paymentMethod: "card",
-      category: "Restaurant",
-      pointsEarned: 99
-    }
-  ];
+  // Get actual transaction data
+  const { transactions, isLoading } = useTransactions();
 
   const getPaymentIcon = (method: string) => {
     switch (method) {
@@ -151,33 +102,50 @@ export const HistoryScreen = (): JSX.Element => {
 
           {/* Transactions List */}
           <div className="space-y-4">
-            {transactions.map((transaction) => (
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#CBAB58]"></div>
+              </div>
+            ) : transactions.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-[#71727A]">No transactions yet</p>
+                <p className="text-[#71727A] text-sm mt-2">Complete a payment to see your transaction history</p>
+              </div>
+            ) : (
+              transactions.map((transaction) => (
               <div 
                 key={transaction.id}
                 className="flex items-center justify-between p-4 bg-[#2C2D32] rounded-xl"
               >
                 <div className="flex items-center">
                   <div className="w-12 h-12 rounded-full bg-[#CBAB58]/10 flex items-center justify-center mr-4">
-                    {getPaymentIcon(transaction.paymentMethod)}
+                    {getPaymentIcon(transaction.payment_method)}
                   </div>
                   <div>
                     <h3 className="text-white font-medium">{transaction.title}</h3>
                     <div className="flex items-center space-x-2">
                       <span className="text-[#CBAB58] text-xs">{transaction.category}</span>
                       <span className="text-white/60 text-xs">•</span>
-                      <span className="text-white/60 text-xs">{getPaymentLabel(transaction.paymentMethod)}</span>
+                      <span className="text-white/60 text-xs">{getPaymentLabel(transaction.payment_method)}</span>
                       <span className="text-white/60 text-xs">•</span>
                       <span className="text-white/60 text-xs">{transaction.date}</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex flex-col items-end">
-                  <span className="text-white font-medium">-{transaction.amount}</span>
-                  <span className="text-[#CBAB58] text-sm">-{transaction.cryptoAmount}</span>
-                  <span className="text-green-400 text-xs">+{transaction.pointsEarned} pts ({formatUSDFromPoints(transaction.pointsEarned)})</span>
+                  <span className="text-white font-medium">
+                    -ARS {transaction.amount_ars.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>
+                  <span className="text-[#CBAB58] text-sm">
+                    -{transaction.amount_crypto.toFixed(2)} {transaction.crypto_symbol}
+                  </span>
+                  <span className="text-green-400 text-xs">
+                    +{transaction.points_earned} pts ({formatUSDFromPoints(transaction.points_earned)})
+                  </span>
                 </div>
               </div>
-            ))}
+              ))
+            )}
           </div>
 
           {/* Download Popup */}

@@ -8,7 +8,8 @@ import { LiveRegion } from "../../components/LiveRegion";
 import { AccessibleButton } from "../../components/AccessibleButton";
 import { useAnnouncement } from "../../hooks/useAnnouncement";
 import { useFocusManagement } from "../../hooks/useFocusManagement";
-import { mockUserPoints, formatPointsWithUSD, formatUSDFromPoints, getPointsTier } from "../../lib/points-system";
+import { formatPointsWithUSD, formatUSDFromPoints, getPointsTier } from "../../lib/points-system";
+import { useTransactions } from "../../hooks/useTransactions";
 
 export const HomeScreen = (): JSX.Element => {
   const navigate = useNavigate();
@@ -18,10 +19,13 @@ export const HomeScreen = (): JSX.Element => {
   const { announcement, announce } = useAnnouncement();
   const { elementRef: mainRef } = useFocusManagement(true);
 
+  // Get actual transaction data
+  const { totalPoints, transactions } = useTransactions();
+
   // Get user profile data
   const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
   const connectedSocials = userProfile.connectedSocials || [];
-  const userTier = getPointsTier(mockUserPoints.lifetimeEarned);
+  const userTier = getPointsTier(totalPoints);
 
   useEffect(() => {
     // Announce page load
@@ -216,9 +220,9 @@ export const HomeScreen = (): JSX.Element => {
                     <p 
                       id="points-stat" 
                       className="text-white text-lg font-bold" 
-                      aria-label={`${mockUserPoints.totalPoints.toLocaleString()} reward points worth ${formatUSDFromPoints(mockUserPoints.totalPoints)}`}
+                      aria-label={`${totalPoints.toLocaleString()} reward points worth ${formatUSDFromPoints(totalPoints)}`}
                     >
-                      {mockUserPoints.totalPoints.toLocaleString()}
+                      {totalPoints.toLocaleString()}
                     </p>
                     <p className="text-[#E1C87D] text-xs font-medium" aria-hidden="true">
                       Points
